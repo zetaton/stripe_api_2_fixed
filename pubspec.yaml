@@ -1,7 +1,6 @@
 name: stripe_api_2
 description: Stripe API 
 version: 1.0.0
-author: Mohammad Aljammal
 homepage: https://github.com/aljamm/stripe_api_2
 
 environment:
