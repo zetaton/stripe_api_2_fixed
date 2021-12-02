@@ -304,7 +304,9 @@ class StripeCard extends StripeJsonModel implements StripePaymentSource {
   /// @param possibleCardType a String that might match a {@link CardBrand} or be empty.
   /// @return {@code null} if the input is blank, else the appropriate {@link CardBrand}.
   static String? asCardBrand(String? possibleCardType) {
-    if (possibleCardType == null || possibleCardType!.trim().isEmpty) {
+    if (possibleCardType == null) {
+      return null;
+    }else if(possibleCardType ==""){
       return null;
     }
 
