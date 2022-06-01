@@ -31,8 +31,7 @@ class StripeApiHandler {
   static const String FIELD_ERROR = "error";
   static const String FIELD_SOURCE = "source";
 
-  static const String MALFORMED_RESPONSE_MESSAGE =
-      "An improperly formatted error response was found.";
+  static const String MALFORMED_RESPONSE_MESSAGE = "An improperly formatted error response was found.";
 
   static final StripeApiHandler _singleton = StripeApiHandler._internal();
 
@@ -47,12 +46,10 @@ class StripeApiHandler {
   ///
   ///
   ///
-  Future<Token?> createToken(
-      Map<String, dynamic> params, String publishableKey) async {
+  Future<Token?> createToken(Map<String, dynamic> params, String publishableKey) async {
     const url = "$LIVE_API_PATH/tokens";
     final options = RequestOptions(publishableApiKey: publishableKey);
-    final response = await _getStripeResponse(RequestMethod.post, url, options,
-        params: params);
+    final response = await _getStripeResponse(RequestMethod.post, url, options, params: params);
     final token = Token.opj(response);
     return token;
   }
@@ -71,8 +68,7 @@ class StripeApiHandler {
   ///
   ///
   ///
-  Future<Source> addCustomerSource(
-      String customerId, String sourceId, String secret) async {
+  Future<Source> addCustomerSource(String customerId, String sourceId, String secret) async {
     final String url = "$LIVE_API_PATH/customers/$customerId/sources";
     final options = RequestOptions(publishableApiKey: secret);
     final response = await _getStripeResponse(
@@ -88,8 +84,7 @@ class StripeApiHandler {
   ///
   ///
   ///
-  Future<bool> deleteCustomerSource(
-      String customerId, String sourceId, String secret) async {
+  Future<bool> deleteCustomerSource(String customerId, String sourceId, String secret) async {
     final String url = "$LIVE_API_PATH/customers/$customerId/sources/$sourceId";
     final options = RequestOptions(publishableApiKey: secret);
     final response = await _getStripeResponse(
@@ -104,8 +99,7 @@ class StripeApiHandler {
   ///
   ///
   ///
-  Future<Customer> updateCustomerDefaultSource(
-      String customerId, String sourceId, String secret) async {
+  Future<Customer> updateCustomerDefaultSource(String customerId, String sourceId, String secret) async {
     final String url = "$LIVE_API_PATH/customers/$customerId";
     final options = RequestOptions(publishableApiKey: secret);
     final response = await _getStripeResponse(
@@ -121,8 +115,7 @@ class StripeApiHandler {
   ///
   ///
   ///
-  Future<Customer> updateCustomerShippingInformation(String customerId,
-      ShippingInformation shippingInfo, String secret) async {
+  Future<Customer> updateCustomerShippingInformation(String customerId, ShippingInformation shippingInfo, String secret) async {
     final String url = "$LIVE_API_PATH/customers/$customerId";
     final options = RequestOptions(publishableApiKey: secret);
     final response = await _getStripeResponse(
@@ -138,9 +131,8 @@ class StripeApiHandler {
   ///
   ///
   ///
-  Future<Map<String, dynamic>> _getStripeResponse(
-      RequestMethod method, final String url, RequestOptions options,
-      {final Map<String, dynamic> ?params}) async {
+  Future<Map<String, dynamic>> _getStripeResponse(RequestMethod method, final String url, RequestOptions options,
+      {final Map<String, dynamic>? params}) async {
     final headers = _headers(options: options);
 
     http.Response response;
@@ -176,14 +168,13 @@ class StripeApiHandler {
     try {
       resp = json.decode(response.body);
     } catch (error) {
-      final stripeError = StripeAPIError(requestId!,
-          {StripeAPIError.FIELD_MESSAGE: MALFORMED_RESPONSE_MESSAGE});
+      final stripeError = StripeAPIError(requestId ?? "", {StripeAPIError.FIELD_MESSAGE: MALFORMED_RESPONSE_MESSAGE});
       throw StripeAPIException(stripeError);
     }
 
     if (statusCode < 200 || statusCode >= 300) {
       final Map<String, dynamic> errBody = resp[FIELD_ERROR];
-      final stripeError = StripeAPIError(requestId!, errBody);
+      final stripeError = StripeAPIError(requestId ?? "", errBody);
       throw StripeAPIException(stripeError);
     } else {
       return resp;
@@ -203,7 +194,7 @@ class StripeApiHandler {
     headers["Authorization"] = "Bearer ${options.publishableApiKey}";
 
     // debug headers
-    Map<String, String> propertyMap = new Map();
+    Map<String, String> propertyMap = {};
     propertyMap["os.name"] = defaultTargetPlatform.toString();
     //propertyMap["os.version"] = String.valueOf(Build.VERSION.SDK_INT));
     propertyMap["bindings.version"] = VERSION_NAME;
@@ -230,10 +221,7 @@ class StripeApiHandler {
   }
 
   static String _encodeMap(Map<String, dynamic> params) {
-    return params.keys
-        .map((key) =>
-            '${Uri.encodeComponent(key)}=${Uri.encodeComponent(params[key].toString())}')
-        .join('&');
+    return params.keys.map((key) => '${Uri.encodeComponent(key)}=${Uri.encodeComponent(params[key].toString())}').join('&');
   }
 
   static String _urlEncodeMap(dynamic data) {
@@ -247,7 +235,7 @@ class StripeApiHandler {
       } else if (sub is Map) {
         sub.forEach((k, v) {
           if (path == "") {
-            urlEncode(v, "${Uri.encodeQueryComponent(k)}");
+            urlEncode(v, Uri.encodeQueryComponent(k));
           } else {
             urlEncode(v, "$path%5B${Uri.encodeQueryComponent(k)}%5D");
           }
